@@ -8,6 +8,7 @@ RUN apt update && \
 		make \
 		git \
 	&& \
+	cd / && \
 	mkdir ProjectChrono_build && \
 	cd ProjectChrono_build/ && \
 	git clone https://github.com/projectchrono/chrono.git && \

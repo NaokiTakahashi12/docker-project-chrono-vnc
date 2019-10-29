@@ -6,6 +6,7 @@ RUN apt update && \
 		wget \
 		unzip \
 	&& \
+	cd / && \
 	mkdir IRRlicht_build && \
 	cd IRRlicht_build && \
 	wget http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip && \
