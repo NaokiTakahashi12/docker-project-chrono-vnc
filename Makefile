@@ -12,10 +12,13 @@ PROJECTCHRONO	:= project-chrono
 
 # Support ubuntu distributions
 BIONIC			:= bionic
+XENIAL			:= xenial
 
 # Build image tag
-BIONICBASE		:= $(BIONIC)-base
-BIONICIRRLICHT	:= $(BIONIC)-irrlicht
+BIONICBASE		:= $(BIONIC)-$(BASE)
+BIONICIRRLICHT	:= $(BIONIC)-$(IRRLICHT)
+XENIALBASE		:= $(XENIAL)-$(BASE)
+XENIALIRRLICHT	:= $(XENIAL)-$(IRRLICHT)
 
 define dockerbuild
 	@docker build \
@@ -27,7 +30,7 @@ define dockerbuild
 endef
 
 .PHONY: build
-build: $(BIONIC)
+build: $(BIONIC) $(XENIAL)
 
 $(BIONIC): $(BIONIC)/$(PROJECTCHRONO)/$(DOCKERFILE) $(BIONICIRRLICHT)
 	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
@@ -35,24 +38,32 @@ $(BIONIC): $(BIONIC)/$(PROJECTCHRONO)/$(DOCKERFILE) $(BIONICIRRLICHT)
 
 $(BIONICIRRLICHT): $(BIONIC)/$(IRRLICHT)/$(DOCKERFILE) $(BIONICBASE)
 	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
-	@echo "Build image is $(DOCKERIMAGE)"
-	@echo "Image from $<"
 	$(call dockerbuild, $<, $(DOCKERIMAGE))
 
 $(BIONICBASE): $(BIONIC)/$(BASE)/$(DOCKERFILE)
 	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
-	@echo "Build image is $(DOCKERIMAGE)"
-	@echo "Image from $<"
+	$(call dockerbuild, $<, $(DOCKERIMAGE))
+
+$(XENIAL): $(XENIAL)/$(PROJECTCHRONO)/$(DOCKERFILE) $(XENIALIRRLICHT)
+	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
+	$(call dockerbuild, $<, $(DOCKERIMAGE))
+
+$(XENIALIRRLICHT): $(XENIAL)/$(IRRLICHT)/$(DOCKERFILE) $(XENIALBASE)
+	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
+	$(call dockerbuild, $<, $(DOCKERIMAGE))
+
+$(XENIALBASE): $(XENIAL)/$(BASE)/$(DOCKERFILE)
+	$(eval DOCKERIMAGE := "$(USERNAME)/$(PROJECT):$@")
 	$(call dockerbuild, $<, $(DOCKERIMAGE))
 
 PHONY: clean
-clean: $(BIONIC) $(BIONICIRRLICHT) $(BIONICBASE)
+clean: $(BIONIC) $(BIONICIRRLICHT) $(BIONICBASE) $(XENIAL) $(XENIALIRRLICHT) $(XENIALBASE)
 	@for IMAGETAG in $^; do \
 		docker image rm $(USERNAME)/$(PROJECT):$$IMAGETAG; \
 	done
 
 PHONY: pull
-pull: $(BIONIC) $(BIONICIRRLICHT) $(BIONICBASE)
+pull: $(BIONIC) $(BIONICIRRLICHT) $(BIONICBASE) $(XENIAL) $(XENIALIRRLICHT) $(XENIALBASE)
 	@for IMAGETAG in $^; do \
 		docker pull $(USERNAME)/$(PROJECT):$$IMAGETAG; \
 	done
