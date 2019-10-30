@@ -1,4 +1,4 @@
-FROM naokitakahashi12/project-chrono-vnc:bionic-base
+FROM naokitakahashi12/project-chrono-vnc:xenial-base
 
 RUN apt update && \
 	apt install -y \
