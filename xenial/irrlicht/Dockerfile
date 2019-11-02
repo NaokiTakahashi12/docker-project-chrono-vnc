@@ -1,4 +1,4 @@
-FROM naokitakahashi12/project-chrono-vnc:xenial-base
+FROM naokitakahashi12/project-chrono-vnc:xenial-blaze
 
 RUN apt update && \
 	apt install -y \
@@ -6,9 +6,8 @@ RUN apt update && \
 		wget \
 		unzip \
 	&& \
-	cd / && \
-	mkdir IRRlicht_build && \
-	cd IRRlicht_build && \
+	mkdir -p /setup/irrlicht && \
+	cd /setup/irrlicht/ && \
 	wget http://downloads.sourceforge.net/irrlicht/irrlicht-1.8.4.zip && \
 	unzip irrlicht-1.8.4.zip && \
 	cd irrlicht-1.8.4/source/Irrlicht && \
@@ -17,7 +16,7 @@ RUN apt update && \
 	echo "/usr/local/lib" > /etc/ld.so.conf.d/usr-local-lib.conf && \
 	ldconfig -v && \
 	cd / && \
-	rm -rf IRRlicht_build && \
+	rm -rf /setup && \
 	apt remove -y \
 		make \
 		wget \
