@@ -3,8 +3,15 @@ FROM dorowu/ubuntu-desktop-lxde-vnc:bionic
 RUN apt update && \
 	apt upgrade -y && \
 	apt install -y \
-		gcc g++ \
+		gcc \
+		g++ \
+		libopenmpi-dev \
+		liblapack-dev \
+		libthrust-dev \
 		libgl-dev \
+		libglm-dev \
+		libglew-dev \
+		libglfw3-dev \
 		freeglut3-dev \
 	&& \
 	apt clean && \
